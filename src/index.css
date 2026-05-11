@@ -1,0 +1,85 @@
+@import "tailwindcss";
+
+@theme {
+  --font-bebas: "Bebas Neue", cursive;
+  --font-inter: "Inter", sans-serif;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background-color: #050505;
+  color: #ffffff;
+  font-family: "Inter", sans-serif;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+#root {
+  width: 100%;
+  max-width: 100%;
+  margin: 0;
+  padding: 0;
+  text-align: unset;
+  border: none;
+  min-height: unset;
+  display: block;
+}
+
+/* ── WebGL canvas stays fixed behind everything ── */
+#webgl-canvas {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100vw; height: 100vh;
+  z-index: -1;
+  pointer-events: none;
+  display: block;
+}
+
+/* ── Typography ── */
+.font-bebas {
+  font-family: "Bebas Neue", cursive;
+}
+
+.title-text {
+  font-size: clamp(6rem, 15vw, 18rem);
+  line-height: 0.85;
+  letter-spacing: 0.05em;
+  text-shadow: 0 4px 24px rgba(0, 0, 0, 0.7);
+}
+
+/* ── Section layering ── */
+.section-container {
+  position: relative;
+  z-index: 10;
+}
+
+/* ── Scroll indicator bounce ── */
+.scroll-indicator {
+  animation: scrollBounce 2s ease-in-out infinite;
+}
+
+@keyframes scrollBounce {
+  0%, 100%      { transform: translateY(0); }
+  40%           { transform: translateY(-16px); }
+  60%           { transform: translateY(-8px); }
+}
+
+/* ── Subtle gradient vignette over canvas edges ── */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse at 50% 0%, transparent 50%, rgba(5,5,5,0.45) 100%),
+    radial-gradient(ellipse at 50% 100%, transparent 50%, rgba(5,5,5,0.55) 100%);
+}
