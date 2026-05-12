@@ -8,6 +8,7 @@ export const DEFAULT_CONFIG = {
 
 export const PRESETS = [
   { name: 'Classic',  baseColor: '#c85a17', lineColor: '#1a0800', seamPattern: 'classic', lighting: 'studio' },
+  { name: 'Neon Pink',baseColor: '#db2777', lineColor: '#ffffff', seamPattern: 'street',  lighting: 'city'   },
   { name: 'Midnight', baseColor: '#0f1629', lineColor: '#00e5ff', seamPattern: 'tech',    lighting: 'night'  },
   { name: 'Inferno',  baseColor: '#7f1d1d', lineColor: '#fbbf24', seamPattern: 'cross',   lighting: 'dawn'   },
   { name: 'Forest',   baseColor: '#14532d', lineColor: '#86efac', seamPattern: 'street',  lighting: 'city'   },
@@ -19,14 +20,29 @@ export const PRESETS = [
 
 // ─── Color palettes ──────────────────────────────────────────────────────────
 export const BASE_COLORS = [
-  '#c85a17', '#065f46', '#1e40af', '#7f1d1d',
-  '#be185d', '#374151', '#f9fafb', '#4c1d95',
-  '#92400e', '#0c4a6e', '#14532d', '#831843',
+  '#c85a17', // Classic Leather Orange
+  '#f97316', // Neon Electric Orange
+  '#eab308', // Cyberpunk Yellow Gold
+  '#db2777', // Deep Magenta Pink
+  '#f43f5e', // Hot Coral Pink
+  '#06b6d4', // Electric Cyan Blue
+  '#3b82f6', // Bright Royal Blue
+  '#a855f7', // Psychedelic Neon Purple
+  '#22c55e', // Neon Lime Green
+  '#10b981', // Emerald Mint Green
+  '#f8fafc', // Platinum Off-White
+  '#1e293b', // Slate Stealth Gray
 ];
 
 export const LINE_COLORS = [
-  '#1a0800', '#ffffff', '#f59e0b', '#22c55e',
-  '#38bdf8', '#f472b6', '#a855f7', '#ef4444',
+  '#1a0800', // Flat Dark Brown
+  '#ffffff', // Clean White
+  '#facc15', // Neon Yellow
+  '#22c55e', // Lime Green
+  '#00e5ff', // Tech Cyan
+  '#f472b6', // soft Pink
+  '#a855f7', // Electric Purple
+  '#ef4444', // Hot Red
 ];
 
 // ─── Seam pattern definitions ────────────────────────────────────────────────
