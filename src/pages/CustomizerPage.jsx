@@ -11,12 +11,17 @@ const LIGHTINGS      = ['studio', 'city', 'dawn'];
 const PATTERN_LABELS = { classic:'Classic', cross:'Cross', street:'Street', tech:'Tech' };
 const LIGHT_LABELS   = { studio:'Studio', city:'City', dawn:'Dawn' };
 
-// Background gradient per lighting env
-const PREVIEW_BG = {
-  studio: 'radial-gradient(ellipse at 60% 40%, #1a2a3a 0%, #060c14 100%)',
-  city:   'radial-gradient(ellipse at 60% 40%, #1c2233 0%, #080a12 100%)',
-  dawn:   'radial-gradient(ellipse at 60% 40%, #2a1008 0%, #080302 100%)',
-};
+// Dynamic premium background generator matching both the selected lighting and the ball's baseColor
+function getDynamicBackground(lighting, baseColor) {
+  const themes = {
+    studio: { bg: '#040810', ambient: '#0a1424' },
+    city:   { bg: '#050a12', ambient: '#0e1a2f' },
+    dawn:   { bg: '#080302', ambient: '#2c1006' },
+  };
+  const t = themes[lighting] || themes.studio;
+  // Combines 14% opacity ball-color glow with lighting-specific ambient stops
+  return `radial-gradient(circle at 50% 50%, ${baseColor}24 0%, ${t.ambient} 48%, ${t.bg} 100%)`;
+}
 
 export default function CustomizerPage({ initialConfig, onSave, onBack }) {
   const [cfg, setCfg] = useState({ ...initialConfig });
@@ -129,7 +134,7 @@ export default function CustomizerPage({ initialConfig, onSave, onBack }) {
       </div>
 
       {/* ═══════════════════════════ RIGHT PREVIEW ════════════════════════════ */}
-      <div style={{ flex:1, position:'relative', background: PREVIEW_BG[cfg.lighting], transition:'background 0.6s' }}>
+      <div style={{ flex:1, position:'relative', background: getDynamicBackground(cfg.lighting, cfg.baseColor), transition:'background 0.6s' }}>
         {/* Watermark */}
         <div style={{
           position:'absolute', top:'32px', right:'36px', zIndex:10,

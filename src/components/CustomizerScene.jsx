@@ -7,6 +7,26 @@ const makeTimer = () => (THREE.Timer ? new THREE.Timer() : new THREE.Clock());
 const getElapsed = (t) => (THREE.Timer ? t.getElapsed() : t.getElapsedTime());
 const tickTimer  = (t) => { if (THREE.Timer) t.update(); };
 
+class SphericalCircle extends THREE.Curve {
+  constructor(sphereRadius, offsetDistance, rx, ry, rz) {
+    super();
+    this.sphereRadius = sphereRadius;
+    this.d = offsetDistance;
+    this.r = Math.sqrt(Math.max(0.1, sphereRadius * sphereRadius - offsetDistance * offsetDistance));
+    this.euler = new THREE.Euler(rx, ry, rz);
+  }
+  getPoint(t, optionalTarget = new THREE.Vector3()) {
+    const angle = t * Math.PI * 2;
+    const p = optionalTarget.set(
+      Math.cos(angle) * this.r,
+      Math.sin(angle) * this.r,
+      this.d
+    );
+    p.applyEuler(this.euler);
+    return p;
+  }
+}
+
 export default function CustomizerScene({ config = DEFAULT_CONFIG }) {
   const canvasRef = useRef(null);
   const ballRefs  = useRef(null);
@@ -74,7 +94,7 @@ export default function CustomizerScene({ config = DEFAULT_CONFIG }) {
     const sphereMat = new THREE.MeshPhysicalMaterial({
       map:              albedoTex,
       normalMap:        normalTex,
-      normalScale:      new THREE.Vector2(2.5, 2.5),
+      normalScale:      new THREE.Vector2(0.85, 0.85), // matched to main scene for high-fidelity realism
       roughnessMap:     roughTex,
       roughness:        0.52,
       metalness:        0.0,
@@ -86,23 +106,23 @@ export default function CustomizerScene({ config = DEFAULT_CONFIG }) {
     ballGroup.add(sphere);
 
     const seamMat = new THREE.MeshStandardMaterial({ color: 0x1a0800, roughness: 1.0, metalness: 0.0 });
-    const ST = 0.028, SR = ballRadius + 0.005;
+    const ST = 0.026, SR = ballRadius + 0.005;
 
-    function makeSeam(radius, thick, rx=0, ry=0, rz=0) {
-      const geo = new THREE.TorusGeometry(radius, thick, 16, 96);
-      const m   = new THREE.Mesh(geo, seamMat);
-      m.rotation.set(rx, ry, rz);
+    function makeSeam(offsetDist, rx=0, ry=0, rz=0) {
+      const curve = new SphericalCircle(SR, offsetDist, rx, ry, rz);
+      const geo   = new THREE.TubeGeometry(curve, 64, ST, 8, true);
+      const m     = new THREE.Mesh(geo, seamMat);
       ballGroup.add(m);
       return { mesh: m, geo };
     }
-    const r85    = ballRadius * 0.82;
-    const seamEq = makeSeam(SR, ST, Math.PI/2);
-    const seamV1 = makeSeam(SR, ST);
-    const seamV2 = makeSeam(SR, ST, 0, Math.PI/2);
-    const seamC1 = makeSeam(r85, ST,  Math.PI/4, 0,         Math.PI/6);
-    const seamC2 = makeSeam(r85, ST, -Math.PI/4, 0,        -Math.PI/6);
-    const seamC3 = makeSeam(r85, ST,  Math.PI/4, Math.PI/2,-Math.PI/6);
-    const seamC4 = makeSeam(r85, ST, -Math.PI/4, Math.PI/2, Math.PI/6);
+    const offset = SR * 0.42;
+    const seamEq = makeSeam(0, Math.PI/2, 0, 0);
+    const seamV1 = makeSeam(0, 0, 0, 0);
+    const seamV2 = makeSeam(0, 0, Math.PI/2, 0);
+    const seamC1 = makeSeam(offset,  Math.PI/4, 0,         Math.PI/6);
+    const seamC2 = makeSeam(offset, -Math.PI/4, 0,        -Math.PI/6);
+    const seamC3 = makeSeam(offset,  Math.PI/4, Math.PI/2,-Math.PI/6);
+    const seamC4 = makeSeam(offset, -Math.PI/4, Math.PI/2, Math.PI/6);
 
     ballGroup.rotation.set(Math.PI/6, Math.PI/4, 0);
     scene.add(ballGroup);
