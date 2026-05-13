@@ -639,7 +639,7 @@ export default function ThreeScene({ config = DEFAULT_CONFIG }) {
         // State 1: HOOPS (Hero)
         gsap.to(ballContainer.position, { x: 0, y: 0, z: 0, duration, ease });
         gsap.to(ballContainer.scale,    { x: 1.0, y: 1.0, z: 1.0, duration, ease });
-        gsap.to(podiumGroup.position,   { y: -5, duration, ease });
+        gsap.to(podiumGroup.position,   { y: -12, duration, ease });
         gsap.to(ringsGroup.scale,       { x: 0, y: 0, z: 0, duration, ease });
         gsap.to(mainLight,              { intensity: 11.5, duration, ease });
         gsap.to(mainLightR,             { intensity: 1.5, duration, ease });
@@ -649,7 +649,7 @@ export default function ThreeScene({ config = DEFAULT_CONFIG }) {
         // State 2: Elite Control / Crossover (Ball goes RIGHT, comfortable size 1.3)
         gsap.to(ballContainer.position, { x: sidOff, y: 0, z: zoomZ, duration, ease });
         gsap.to(ballContainer.scale,    { x: targetScale, y: targetScale, z: targetScale, duration, ease });
-        gsap.to(podiumGroup.position,   { y: -5, duration, ease });
+        gsap.to(podiumGroup.position,   { y: -12, duration, ease });
         gsap.to(ringsGroup.scale,       { x: 0, y: 0, z: 0, duration, ease });
         gsap.to(mainLight,              { intensity: 11.5, duration, ease });
         gsap.to(mainLightR,             { intensity: 1.5, duration, ease });
@@ -659,7 +659,7 @@ export default function ThreeScene({ config = DEFAULT_CONFIG }) {
         // State 3: Perfect Flight / Fast Break (Ball goes LEFT, comfortable size 1.3)
         gsap.to(ballContainer.position, { x: -sidOff, y: 0, z: zoomZ + 2, duration, ease });
         gsap.to(ballContainer.scale,    { x: targetScale, y: targetScale, z: targetScale, duration, ease });
-        gsap.to(podiumGroup.position,   { y: -5, duration, ease });
+        gsap.to(podiumGroup.position,   { y: -12, duration, ease });
         gsap.to(ringsGroup.scale,       { x: 0, y: 0, z: 0, duration, ease });
         gsap.to(mainLight,              { intensity: 1.5, duration, ease });
         gsap.to(mainLightR,             { intensity: 11.5, duration, ease });
@@ -669,7 +669,7 @@ export default function ThreeScene({ config = DEFAULT_CONFIG }) {
         // State 4: The Zone / Center Rings (Ball goes CENTER, scales to 0.78, rings scale to 1)
         gsap.to(ballContainer.position, { x: 0, y: 0, z: 0, duration, ease });
         gsap.to(ballContainer.scale,    { x: 0.78, y: 0.78, z: 0.78, duration, ease });
-        gsap.to(podiumGroup.position,   { y: -5, duration, ease });
+        gsap.to(podiumGroup.position,   { y: -12, duration, ease });
         gsap.to(ringsGroup.scale,       { x: 1, y: 1, z: 1, duration, ease: 'back.out(1.2)' });
         gsap.to(mainLight,              { intensity: 11.5, duration, ease });
         gsap.to(mainLightR,             { intensity: 1.5, duration, ease });
