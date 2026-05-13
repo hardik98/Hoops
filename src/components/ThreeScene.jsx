@@ -268,9 +268,9 @@ export default function ThreeScene({ config = DEFAULT_CONFIG }) {
     sphere.castShadow = sphere.receiveShadow = true;
     ballGroup.add(sphere);
 
-    // Seam lines — deep, matte dark grooves inlaid into the ball surface
-    const seamMat = new THREE.MeshStandardMaterial({ color: 0x111111, roughness: 1.0, metalness: 0.0 });
-    const ST = 0.024; // Refined, elegant sharp lining
+    // Seam lines — flat 2D lines that do not react to lighting (perfect matte flat vector look)
+    const seamMat = new THREE.MeshBasicMaterial({ color: 0x111111 });
+    const ST = 0.016; // Slightly thinner line for a more premium, flush inlay look
     const SR = ballRadius + 0.001; // Extremely flush to avoid wire/tube look and look inlaid
 
     function makeSeam(radius, thick, rx = 0, ry = 0, rz = 0) {
