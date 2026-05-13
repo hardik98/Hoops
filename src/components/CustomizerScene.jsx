@@ -42,25 +42,41 @@ export default function CustomizerScene({ config = DEFAULT_CONFIG }) {
     const hemi = new THREE.HemisphereLight(0xffeedd, 0x111111, 0.8); // Boosted ambient fill
     scene.add(hemi);
 
-    // PRIMARY KEY LIGHT: powerful DirectionalLight from upper-left-front
-    const mainLight = new THREE.DirectionalLight(0xffffff, 11.5); // Boosted key light
+    // PRIMARY LEFT KEY LIGHT: powerful DirectionalLight from upper-left-front
+    const mainLight = new THREE.DirectionalLight(0xffffff, 11.5); // Left key light
     mainLight.position.set(-6, 8, 6);
     mainLight.castShadow = true;
     mainLight.shadow.mapSize.width = mainLight.shadow.mapSize.height = 1024;
     mainLight.shadow.bias = -0.001;
     scene.add(mainLight);
 
-    // SECONDARY FILL: warm amber from lower-right
-    const rimLight = new THREE.PointLight(0xff7733, 4.5, 22); // Boosted fill
+    // PRIMARY RIGHT KEY LIGHT: powerful DirectionalLight from upper-right-front
+    const mainLightR = new THREE.DirectionalLight(0xffffff, 1.5); // Right key light, soft fill by default
+    mainLightR.position.set(6, 8, 6);
+    mainLightR.castShadow = true;
+    mainLightR.shadow.mapSize.width = mainLightR.shadow.mapSize.height = 1024;
+    mainLightR.shadow.bias = -0.001;
+    scene.add(mainLightR);
+
+    // DUAL RIM LIGHTS: warm amber from right & left — recovers shadow sides beautifully
+    const rimLight = new THREE.PointLight(0xff7733, 4.5, 22); // Right rim
     rimLight.position.set(6, -2, 4);
     scene.add(rimLight);
 
-    // BACK RIM: cool blue from rear
-    const fillLight = new THREE.SpotLight(0x3366ff, 5.0, 30, Math.PI / 4, 0.4, 1.2); // Boosted back rim
+    const rimLightL = new THREE.PointLight(0xff7733, 4.5, 22); // Left rim
+    rimLightL.position.set(-6, -2, 4);
+    scene.add(rimLightL);
+
+    // DUAL BACK RIMS: cool blue from rear-right & rear-left for incredible edge separation
+    const fillLight = new THREE.SpotLight(0x3366ff, 5.0, 30, Math.PI / 4, 0.4, 1.2); // Right back rim
     fillLight.position.set(5, 3, -10);
     scene.add(fillLight);
 
-    // SUBTLE FRONT FILL
+    const fillLightL = new THREE.SpotLight(0x3366ff, 5.0, 30, Math.PI / 4, 0.4, 1.2); // Left back rim
+    fillLightL.position.set(-5, 3, -10);
+    scene.add(fillLightL);
+
+    // SUBTLE FRONT FILL: soft warm bounce
     const fillLight2 = new THREE.PointLight(0xffe8cc, 1.8, 18); // Boosted front fill
     fillLight2.position.set(0, -2, 7);
     scene.add(fillLight2);
@@ -136,7 +152,7 @@ export default function CustomizerScene({ config = DEFAULT_CONFIG }) {
         eq: seamEq.mesh, v1: seamV1.mesh, v2: seamV2.mesh,
         c1: seamC1.mesh, c2: seamC1.mesh, c3: seamC2.mesh, c4: seamC2.mesh
       },
-      hemi, mainLight, rimLight, fillLight, fillLight2,
+      hemi, mainLight, mainLightR, rimLight, rimLightL, fillLight, fillLightL, fillLight2,
     };
     applyConfigToRefs(ballRefs.current, config);
 

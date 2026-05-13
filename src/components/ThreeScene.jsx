@@ -184,35 +184,60 @@ export default function ThreeScene({ config = DEFAULT_CONFIG }) {
     let cameraZ = window.innerWidth < 768 ? 22 : 15;
     camera.position.set(0, 0, cameraZ);
 
+    // ── Ball & Lights Container (keeps studio lighting perfectly consistent in all positions) ──
+    const ballContainer = new THREE.Group();
+    scene.add(ballContainer);
+
     // ── Lighting — dramatic studio setup for photorealistic specular highlight ──
     const hemi = new THREE.HemisphereLight(0xffeedd, 0x111111, 0.8); // Boosted ambient fill
-    scene.add(hemi);
+    ballContainer.add(hemi);
 
-    // PRIMARY KEY LIGHT: powerful DirectionalLight from upper-left-front
-    // This provides consistent bright illumination while allowing the specular highlight to move
-    const mainLight = new THREE.DirectionalLight(0xffffff, 11.5); // Boosted key light
+    // PRIMARY LEFT KEY LIGHT: powerful DirectionalLight from upper-left-front
+    const mainLight = new THREE.DirectionalLight(0xffffff, 11.5); // Left key light
     mainLight.position.set(-6, 8, 6);   // upper-left-front
     mainLight.castShadow = true;
     mainLight.shadow.mapSize.width = mainLight.shadow.mapSize.height = 2048;
     mainLight.shadow.camera.near = 0.5;
     mainLight.shadow.camera.far = 50;
     mainLight.shadow.bias = -0.001;
-    scene.add(mainLight);
+    ballContainer.add(mainLight);
+    ballContainer.add(mainLight.target);
 
-    // SECONDARY FILL: warm amber from lower-right — recovers shadow side
-    const rimLight = new THREE.PointLight(0xff7733, 4.5, 22); // Boosted fill
+    // PRIMARY RIGHT KEY LIGHT: powerful DirectionalLight from upper-right-front (fades up on left scroll)
+    const mainLightR = new THREE.DirectionalLight(0xffffff, 0.0); // Right key light, starts at 0
+    mainLightR.position.set(6, 8, 6);   // upper-right-front
+    mainLightR.castShadow = true;
+    mainLightR.shadow.mapSize.width = mainLightR.shadow.mapSize.height = 2048;
+    mainLightR.shadow.camera.near = 0.5;
+    mainLightR.shadow.camera.far = 50;
+    mainLightR.shadow.bias = -0.001;
+    ballContainer.add(mainLightR);
+    ballContainer.add(mainLightR.target);
+
+    // DUAL RIM LIGHTS: warm amber from right & left — recovers shadow sides beautifully
+    const rimLight = new THREE.PointLight(0xff7733, 4.5, 22); // Right rim
     rimLight.position.set(6, -2, 4);
-    scene.add(rimLight);
+    ballContainer.add(rimLight);
 
-    // BACK RIM: cool blue from rear for edge separation
-    const fillLight = new THREE.SpotLight(0x3366ff, 5.0, 30, Math.PI / 4, 0.4, 1.2); // Boosted back rim
+    const rimLightL = new THREE.PointLight(0xff7733, 4.5, 22); // Left rim
+    rimLightL.position.set(-6, -2, 4);
+    ballContainer.add(rimLightL);
+
+    // DUAL BACK RIMS: cool blue from rear-right & rear-left for incredible edge separation
+    const fillLight = new THREE.SpotLight(0x3366ff, 5.0, 30, Math.PI / 4, 0.4, 1.2); // Right back rim
     fillLight.position.set(5, 3, -10);
-    scene.add(fillLight);
+    ballContainer.add(fillLight);
+    ballContainer.add(fillLight.target);
+
+    const fillLightL = new THREE.SpotLight(0x3366ff, 5.0, 30, Math.PI / 4, 0.4, 1.2); // Left back rim
+    fillLightL.position.set(-5, 3, -10);
+    ballContainer.add(fillLightL);
+    ballContainer.add(fillLightL.target);
 
     // SUBTLE FRONT FILL: very soft warm bounce
     const fillLight2 = new THREE.PointLight(0xffe8cc, 1.8, 18); // Boosted front fill
     fillLight2.position.set(0, -2, 7);
-    scene.add(fillLight2);
+    ballContainer.add(fillLight2);
 
     // DEDICATED PODIUM SPOTLIGHT: illuminates the slate titanium-steel curves and laser rings brilliantly
     const podiumSpot = new THREE.SpotLight(0xffffff, 28.0, 18, Math.PI / 4, 0.4, 0.8);
@@ -283,7 +308,7 @@ export default function ThreeScene({ config = DEFAULT_CONFIG }) {
     const seamC2 = makeCurveSeam(rCurve, ST, d, Math.PI / 4, 0, Math.PI / 2);
 
     ballGroup.rotation.set(Math.PI / 6, Math.PI / 4, 0);
-    scene.add(ballGroup);
+    ballContainer.add(ballGroup);
 
     // Shadow catcher
     const shadowPlaneGeo = new THREE.PlaneGeometry(20, 20);
@@ -479,15 +504,13 @@ export default function ThreeScene({ config = DEFAULT_CONFIG }) {
     let spinRef = null;
     function triggerSpin() {
       if (!spinRef) return;
-      spinRef.y = 0;
+      // Do not kill tweens of spinRef because those are owned by the scroll timeline.
+      // Just snappy-spin the ball rotation directly on Y axis
       gsap.killTweensOf(ballGroup.rotation);
-      gsap.killTweensOf(spinRef);
-      // Reset tilt so spin looks clean left-to-right
       ballGroup.rotation.x = 0;
       ballGroup.rotation.z = 0;
-      // Snappy 3 rounds left-to-right (Y axis only), then slow decay
       gsap.to(ballGroup.rotation, { y: `+=${Math.PI * 2 * 3}`, duration: 1.2, ease: 'power3.out' });
-      gsap.to(spinRef, { y: 0.005, duration: 1.0, delay: 0.5, ease: 'power2.inOut' });
+      spinRef.y = 0.005; // Set base continuous auto-spin speed
     }
 
     // Dynamic ring color matching ball accent color (no-op to keep rings white, but colors podium!)
@@ -523,11 +546,11 @@ export default function ThreeScene({ config = DEFAULT_CONFIG }) {
       );
       vec.unproject(camera).sub(camera.position).normalize();
       pos.copy(camera.position).add(vec.multiplyScalar(-camera.position.z / vec.z));
-      ballGroup.position.copy(pos);
+      ballContainer.position.copy(pos);
       const vFov = (camera.fov * Math.PI) / 180;
       const vH = 2 * Math.tan(vFov / 2) * camera.position.z, vW = vH * camera.aspect;
       const sc = ((rect.width / window.innerWidth) * vW / 4) * 1.1;  // 1.1 = correct match to 0.85em placeholder
-      ballGroup.scale.set(sc, sc, sc);
+      ballContainer.scale.set(sc, sc, sc);
     }
 
     function onWindowResize() {
@@ -590,65 +613,107 @@ export default function ThreeScene({ config = DEFAULT_CONFIG }) {
     const spin = { y: 0, x: 0.002, z: 0.001 };
     spinRef = spin; // wire to triggerSpin closure
 
-    // ── GSAP Scroll Timeline ───────────────────────────────────────
-    // SCROLL DESIGN:
-    //   t=0→1 : Ball slides LEFT (Crossover section)
-    //   t=1→2 : Ball slides RIGHT (Fast Break section)
-    //          └─ Rings SCALE UP during this phase (t=1→2), fully visible by t=2
-    //   t=2→3 : Ball glides from RIGHT into CENTER of rings
-    //           - rings already at scale 1, WAITING for ball
-    //           - ball shrinks from 1.5 → 1.0 as it enters
-    //           - spin ramps up fast  
-    //   t=3+  : Ball rises to podium, rings shrink out
-
     const mob = window.innerWidth < 768;
-    const sidOff = mob ? 3.8 : 6.4, zoomZ = mob ? 8 : 5;
+    const sidOff = mob ? 2.2 : 5.2; // Golden-ratio side offsets to keep center inside on all aspect ratios
+    const zoomZ = mob ? 8 : 5;
+    const targetScale = mob ? 1.0 : 1.3; // Sized perfectly to fit cleanly beside technical text without overlapping or overwhelming
 
-    const tl = gsap.timeline({
-      scrollTrigger: { trigger: 'body', start: 'top top', end: 'bottom bottom', scrub: 0.55 },
+    // ── STATE-DRIVEN SCROLL ENGINE (NO MORE CONTINOUS SCRUBBING / IN-BETWEEN resting states) ──
+    let activeStateIndex = 0;
+
+    function goToState(index) {
+      activeStateIndex = index;
+      const duration = 0.85;
+      const ease = 'power2.out';
+
+      // Cleanly cancel all active animations on any shared Three.js objects to prevent overlap jitter
+      gsap.killTweensOf(ballContainer.position);
+      gsap.killTweensOf(ballContainer.scale);
+      gsap.killTweensOf(podiumGroup.position);
+      gsap.killTweensOf(ringsGroup.scale);
+      gsap.killTweensOf(mainLight);
+      gsap.killTweensOf(mainLightR);
+      gsap.killTweensOf(spin);
+
+      if (index === 0) {
+        // State 1: HOOPS (Hero)
+        gsap.to(ballContainer.position, { x: 0, y: 0, z: 0, duration, ease });
+        gsap.to(ballContainer.scale,    { x: 1.0, y: 1.0, z: 1.0, duration, ease });
+        gsap.to(podiumGroup.position,   { y: -5, duration, ease });
+        gsap.to(ringsGroup.scale,       { x: 0, y: 0, z: 0, duration, ease });
+        gsap.to(mainLight,              { intensity: 11.5, duration, ease });
+        gsap.to(mainLightR,             { intensity: 1.5, duration, ease });
+        gsap.to(spin,                   { y: 0.002, duration, ease });
+      }
+      else if (index === 1) {
+        // State 2: Elite Control / Crossover (Ball goes RIGHT, comfortable size 1.3)
+        gsap.to(ballContainer.position, { x: sidOff, y: 0, z: zoomZ, duration, ease });
+        gsap.to(ballContainer.scale,    { x: targetScale, y: targetScale, z: targetScale, duration, ease });
+        gsap.to(podiumGroup.position,   { y: -5, duration, ease });
+        gsap.to(ringsGroup.scale,       { x: 0, y: 0, z: 0, duration, ease });
+        gsap.to(mainLight,              { intensity: 11.5, duration, ease });
+        gsap.to(mainLightR,             { intensity: 1.5, duration, ease });
+        gsap.to(spin,                   { y: 0.12, duration, ease });
+      }
+      else if (index === 2) {
+        // State 3: Perfect Flight / Fast Break (Ball goes LEFT, comfortable size 1.3)
+        gsap.to(ballContainer.position, { x: -sidOff, y: 0, z: zoomZ + 2, duration, ease });
+        gsap.to(ballContainer.scale,    { x: targetScale, y: targetScale, z: targetScale, duration, ease });
+        gsap.to(podiumGroup.position,   { y: -5, duration, ease });
+        gsap.to(ringsGroup.scale,       { x: 0, y: 0, z: 0, duration, ease });
+        gsap.to(mainLight,              { intensity: 1.5, duration, ease });
+        gsap.to(mainLightR,             { intensity: 11.5, duration, ease });
+        gsap.to(spin,                   { y: 0.12, duration, ease });
+      }
+      else if (index === 3) {
+        // State 4: The Zone / Center Rings (Ball goes CENTER, scales to 0.78, rings scale to 1)
+        gsap.to(ballContainer.position, { x: 0, y: 0, z: 0, duration, ease });
+        gsap.to(ballContainer.scale,    { x: 0.78, y: 0.78, z: 0.78, duration, ease });
+        gsap.to(podiumGroup.position,   { y: -5, duration, ease });
+        gsap.to(ringsGroup.scale,       { x: 1, y: 1, z: 1, duration, ease: 'back.out(1.2)' });
+        gsap.to(mainLight,              { intensity: 11.5, duration, ease });
+        gsap.to(mainLightR,             { intensity: 1.5, duration, ease });
+        gsap.to(spin,                   { y: 0.38, duration, ease });
+      }
+      else if (index === 4) {
+        // State 5: Podium / The Champion (Rings shrink out, ball goes on podium, final lighting activates)
+        gsap.to(ballContainer.position, { x: 0, y: 0.4, z: 0, duration, ease });
+        gsap.to(ballContainer.scale,    { x: 1.0, y: 1.0, z: 1.0, duration, ease });
+        gsap.to(podiumGroup.position,   { y: -1.65, duration, ease });
+        gsap.to(ringsGroup.scale,       { x: 0, y: 0, z: 0, duration, ease });
+        gsap.to(mainLight,              { intensity: 18.0, duration, ease });
+        gsap.to(mainLightR,             { intensity: 0.0, duration, ease });
+        gsap.to(rimLight,               { intensity: 8.0, duration, ease });
+        gsap.to(rimLightL,              { intensity: 8.0, duration, ease });
+        gsap.to(fillLight,              { intensity: 3.5, distance: 12, duration, ease });
+        gsap.to(fillLightL,             { intensity: 3.5, distance: 12, duration, ease });
+        gsap.to(particleMat,            { opacity: 0.85, duration, ease });
+        gsap.to(spin,                   { y: 0.005, duration, ease });
+      }
+
+      // Handle finale overlay visibility based on exact Stage 5 activation
+      if (index === 4) {
+        gsap.to('#finale-subtitle',  { opacity: 1, y: 0, duration: 0.4, delay: 0.3, ease: 'power1.out' });
+        gsap.to('#finale-card',      { opacity: 1, y: 0, duration: 0.4, delay: 0.45, ease: 'power1.out' });
+        gsap.to('#finale-side-cards', { opacity: 1, y: 0, duration: 0.4, delay: 0.6, ease: 'power1.out' });
+      } else {
+        gsap.to('#finale-subtitle',  { opacity: 0, y: 20, duration: 0.3, ease: 'power1.out' });
+        gsap.to('#finale-card',      { opacity: 0, y: 40, duration: 0.3, ease: 'power1.out' });
+        gsap.to('#finale-side-cards', { opacity: 0, y: 30, duration: 0.3, ease: 'power1.out' });
+      }
+    }
+
+    // Initialize triggers for each of the 5 sections
+    const selectors = ['#hero', '#move-left', '#move-right', '#center-rings', '#finale'];
+    selectors.forEach((selector, index) => {
+      ScrollTrigger.create({
+        trigger: selector,
+        start: 'top 50%',   // Fire as soon as section center crosses the viewport center
+        end: 'bottom 50%',
+        onEnter: () => goToState(index),
+        onEnterBack: () => goToState(index),
+      });
     });
-
-    // ── t=0→1: Slide LEFT (Crossover) ──
-    tl.to(ballGroup.position, { x: -sidOff, y: 0, z: zoomZ, ease: 'power1.inOut' }, 0);
-    tl.to(ballGroup.scale,    { x: 1.3, y: 1.3, z: 1.3, ease: 'power1.inOut' }, 0); // Fits beautifully without clipping
-    tl.to(mainLight.position, { x: -sidOff - 4, ease: 'power1.inOut' }, 0); // Keep highlight perfectly tracking front
-
-    // Ramp up spin speed precisely as it arrives fully on the left side (t=1)
-    tl.to(spin,               { y: 0.22, ease: 'power1.inOut' }, 0);
-    tl.to(spin,               { y: 0.12, ease: 'power1.out' }, 0.9);
-
-    // ── t=1→2: Slide RIGHT (Fast Break) ──
-    tl.to(ballGroup.position, { x: sidOff, z: zoomZ + 2, ease: 'power1.inOut' }, 1);
-    tl.to(mainLight.position, { x: sidOff - 4, ease: 'power1.inOut' }, 1); // Keep highlight perfectly tracking front
-    // Settle speed down during slide, then spike to high speed precisely on right arrival (t=2)
-    tl.to(spin,               { y: 0.22, ease: 'power1.inOut' }, 1);
-    tl.to(spin,               { y: 0.12, ease: 'power1.out' }, 1.9);
-
-    // Delay rings scaling until t=1.95, bringing them in precisely as the ball glides into center
-    tl.to(ringsGroup.scale,   { x: 1, y: 1, z: 1, ease: 'back.out(1.2)' }, 1.95);
-
-    // ── t=2→3: Ball glides from RIGHT → CENTER (The Zone) ──
-    tl.to(ballGroup.position, { x: 0, y: 0, z: 0, ease: 'power1.out' }, 2);
-    tl.to(ballGroup.scale,    { x: 0.78, y: 0.78, z: 0.78, ease: 'power1.out' }, 2); // Shrunk to 0.78 for a perfect clinical layout inside the perfect rings
-    tl.to(mainLight.position, { x: -6, ease: 'power1.out' }, 2); // Return light to studio default
-    tl.to(spin,               { y: 0.38, ease: 'power1.inOut' }, 2); // Hyper-fast 0.38 spin inside rings!
-
-    // Fade in finale text and cards precisely on landing, keeping them hidden prior (prevents soft-scroll overlap!)
-    tl.to('#finale-subtitle',  { opacity: 1, y: 0, ease: 'power1.out' }, 2.72);
-    tl.to('#finale-card',      { opacity: 1, y: 0, ease: 'power1.out' }, 2.76);
-    tl.to('#finale-side-cards', { opacity: 1, y: 0, ease: 'power1.out' }, 2.80);
-
-    // ── t=3: Leave The Zone, dock on podium ──
-    tl.to(ballGroup.position,  { y: 0.4, ease: 'power1.inOut' }, 3); // Centered vertically on screen
-    tl.to(ballGroup.scale,     { x: 1.0, y: 1.0, z: 1.0, ease: 'power1.inOut' }, 3); // Return to standard scale on podium
-    tl.to(podiumGroup.position,{ y: -1.65, ease: 'power1.inOut' }, 3); // Aligns perfectly flush so the ball rests snugly on the crown!
-    tl.to(ringsGroup.scale,    { x: 0, y: 0, z: 0, ease: 'power1.in' }, 2.95);
-    tl.to(spin,                { y: 0.005, ease: 'none' }, 3);
-
-    tl.to(mainLight,   { intensity: 18.0 }, 3); // Brilliant studio key light
-    tl.to(rimLight,    { intensity: 8.0 }, 3);
-    tl.to(fillLight,   { intensity: 3.5, distance: 12 }, 3);
-    tl.to(particleMat, { opacity: 0.85, ease: 'none' }, 3.2);
 
     // Apply initial ring accent color based on loaded config
     updateRingColors(config.baseColor || '#ea580c');
@@ -692,7 +757,7 @@ export default function ThreeScene({ config = DEFAULT_CONFIG }) {
         particleSystem.geometry.attributes.position.needsUpdate = true;
       }
       if (podiumGroup.position.y > -5)
-        ballGroup.position.y += Math.sin(time * 1.8) * 0.0015; // gentle float
+        ballContainer.position.y += Math.sin(time * 1.8) * 0.0015; // gentle float
       renderer.render(scene, camera);
     }
 
@@ -701,12 +766,12 @@ export default function ThreeScene({ config = DEFAULT_CONFIG }) {
     const initTimeout = setTimeout(() => {
       matchBallToPlaceholder();
       ScrollTrigger.refresh();
-      const { x: rx, y: ry, z: rz } = ballGroup.position;
-      const rSc = ballGroup.scale.x;
+      const { x: rx, y: ry, z: rz } = ballContainer.position;
+      const rSc = ballContainer.scale.x;
 
       // Start EXACTLY in place (no position offset) and flash/scale up
-      ballGroup.position.set(rx, ry, rz);
-      ballGroup.scale.set(0, 0, 0);
+      ballContainer.position.set(rx, ry, rz);
+      ballContainer.scale.set(0, 0, 0);
       animate();
 
       intro = gsap.timeline();
@@ -714,7 +779,7 @@ export default function ThreeScene({ config = DEFAULT_CONFIG }) {
       ballGroup.rotation.x = 0;
       ballGroup.rotation.z = 0;
       // Flash in quickly
-      intro.to(ballGroup.scale, { x: rSc, y: rSc, z: rSc, duration: 0.6, ease: 'back.out(1.8)' }, 0);
+      intro.to(ballContainer.scale, { x: rSc, y: rSc, z: rSc, duration: 0.6, ease: 'back.out(1.8)' }, 0);
       // Fast left-to-right spin 3 full rounds on Y axis ONLY (snappy 1.2s duration)
       intro.to(ballGroup.rotation, { y: `+=${Math.PI * 2 * 3}`, duration: 1.2, ease: 'power3.out' }, 0.1);
       // Smoothly ramp in the slow continuous auto-spin once fast spin is done

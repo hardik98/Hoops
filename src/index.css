@@ -9,9 +9,10 @@
   box-sizing: border-box;
 }
 
-html, body {
-  margin: 0;
-  padding: 0;
+html {
+  scroll-snap-type: y mandatory;
+  scroll-behavior: smooth;
+  height: 100%;
 }
 
 body {
@@ -20,6 +21,7 @@ body {
   font-family: "Inter", sans-serif;
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
+  height: 100%;
 }
 
 #root {
@@ -55,10 +57,12 @@ body {
   text-shadow: 0 4px 24px rgba(0, 0, 0, 0.7);
 }
 
-/* ── Section layering ── */
+/* ── Section layering & snapping ── */
 .section-container {
   position: relative;
   z-index: 10;
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
 }
 
 /* ── Scroll indicator bounce ── */

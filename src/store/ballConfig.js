@@ -7,15 +7,16 @@ export const DEFAULT_CONFIG = {
 };
 
 export const PRESETS = [
-  { name: 'Classic',  baseColor: '#c85a17', lineColor: '#1a0800', seamPattern: 'classic', lighting: 'studio' },
-  { name: 'Neon Pink',baseColor: '#db2777', lineColor: '#ffffff', seamPattern: 'street',  lighting: 'city'   },
-  { name: 'Midnight', baseColor: '#0f1629', lineColor: '#00e5ff', seamPattern: 'tech',    lighting: 'night'  },
-  { name: 'Inferno',  baseColor: '#7f1d1d', lineColor: '#fbbf24', seamPattern: 'cross',   lighting: 'dawn'   },
-  { name: 'Forest',   baseColor: '#14532d', lineColor: '#86efac', seamPattern: 'street',  lighting: 'city'   },
-  { name: 'Ocean',    baseColor: '#1e3a8a', lineColor: '#7dd3fc', seamPattern: 'classic', lighting: 'studio' },
-  { name: 'Chrome',   baseColor: '#1f2937', lineColor: '#f59e0b', seamPattern: 'tech',    lighting: 'city'   },
-  { name: 'Royal',    baseColor: '#4c1d95', lineColor: '#f0abfc', seamPattern: 'cross',   lighting: 'studio' },
-  { name: 'Sunset',   baseColor: '#92400e', lineColor: '#fde68a', seamPattern: 'street',  lighting: 'dawn'   },
+  { name: 'Classic',   baseColor: '#c85a17', lineColor: '#1a0800', seamPattern: 'classic', lighting: 'studio' },
+  { name: 'Neon Pink', baseColor: '#db2777', lineColor: '#ffffff', seamPattern: 'street',  lighting: 'studio' },
+  { name: 'Baby Pink', baseColor: '#fbcfe8', lineColor: '#ffffff', seamPattern: 'classic', lighting: 'studio' },
+  { name: 'Midnight',  baseColor: '#0f1629', lineColor: '#00e5ff', seamPattern: 'tech',    lighting: 'studio' },
+  { name: 'Inferno',   baseColor: '#7f1d1d', lineColor: '#fbbf24', seamPattern: 'cross',   lighting: 'studio' },
+  { name: 'Forest',    baseColor: '#14532d', lineColor: '#86efac', seamPattern: 'street',  lighting: 'studio' },
+  { name: 'Ocean',     baseColor: '#1e3a8a', lineColor: '#7dd3fc', seamPattern: 'classic', lighting: 'studio' },
+  { name: 'Chrome',    baseColor: '#1f2937', lineColor: '#f59e0b', seamPattern: 'tech',    lighting: 'studio' },
+  { name: 'Royal',     baseColor: '#4c1d95', lineColor: '#f0abfc', seamPattern: 'cross',   lighting: 'studio' },
+  { name: 'Sunset',    baseColor: '#92400e', lineColor: '#fde68a', seamPattern: 'street',  lighting: 'studio' },
 ];
 
 // ─── Color palettes ──────────────────────────────────────────────────────────
@@ -24,6 +25,8 @@ export const BASE_COLORS = [
   '#f97316', // Neon Electric Orange
   '#eab308', // Cyberpunk Yellow Gold
   '#db2777', // Deep Magenta Pink
+  '#fbcfe8', // Luxurious Baby Pink
+  '#ff44aa', // Hot Vivid Pink
   '#f43f5e', // Hot Coral Pink
   '#06b6d4', // Electric Cyan Blue
   '#3b82f6', // Bright Royal Blue
@@ -37,10 +40,11 @@ export const BASE_COLORS = [
 export const LINE_COLORS = [
   '#1a0800', // Flat Dark Brown
   '#ffffff', // Clean White
+  '#fbcfe8', // Baby Pink Line
+  '#ff44aa', // Vivid Pink Line
   '#facc15', // Neon Yellow
   '#22c55e', // Lime Green
   '#00e5ff', // Tech Cyan
-  '#f472b6', // soft Pink
   '#a855f7', // Electric Purple
   '#ef4444', // Hot Red
 ];
@@ -87,7 +91,7 @@ export const LIGHTING_CONFIGS = {
 // ─── Apply config to live Three.js refs ──────────────────────────────────────
 export function applyConfigToRefs(refs, config) {
   if (!refs) return;
-  const { sphereMat, seamMat, seams, hemi, mainLight, rimLight, fillLight, fillLight2, scene } = refs;
+  const { sphereMat, seamMat, seams, hemi, mainLight, mainLightR, rimLight, rimLightL, fillLight, fillLightL, fillLight2, scene } = refs;
 
   // Base color
   if (sphereMat) sphereMat.color.set(config.baseColor);
@@ -111,8 +115,11 @@ export function applyConfigToRefs(refs, config) {
     hemi.intensity = lc.hemi.intensity;
   }
   if (mainLight) { mainLight.color.setHex(lc.main.color); mainLight.intensity = lc.main.intensity; }
+  if (mainLightR) { mainLightR.color.setHex(lc.main.color); mainLightR.intensity = 1.5; } // soft right key fill by default in customizer/center
   if (rimLight)  { rimLight.color.setHex(lc.rim.color);   rimLight.intensity  = lc.rim.intensity;  }
+  if (rimLightL) { rimLightL.color.setHex(lc.rim.color);  rimLightL.intensity = lc.rim.intensity;  }
   if (fillLight) { fillLight.color.setHex(lc.fill.color);  fillLight.intensity  = lc.fill.intensity;  }
+  if (fillLightL) { fillLightL.color.setHex(lc.fill.color); fillLightL.intensity = lc.fill.intensity; }
   if (fillLight2){ fillLight2.color.setHex(lc.fill2.color); fillLight2.intensity = lc.fill2.intensity; }
   if (scene?.fog) scene.fog.color.setHex(lc.fogColor);
 }

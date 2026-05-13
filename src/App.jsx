@@ -287,37 +287,151 @@ export default function App() {
         </section>
 
 
-        {/* ═════════════════════════ CROSSOVER ════════════════════════════════ */}
-        <section id="move-left" className="section-container h-[150vh] relative pointer-events-none">
-          <div className="sticky top-0 h-screen flex items-center px-8 md:px-24">
-            <h2 className="font-bebas w-full text-right" style={{
-              fontSize: 'clamp(4rem,10vw,10rem)',
-              transform: 'translateY(4rem)',
-              color: 'transparent',
-              WebkitTextStroke: '2px rgba(255,255,255,0.85)',
-              textShadow: '0 0 40px rgba(255,255,255,0.15)',
-              letterSpacing: '0.05em', lineHeight: 1,
-            }}>CROSSOVER</h2>
+        {/* ═════════════════════════ CROSSOVER (ELITE CONTROL) ════════════════════════════════ */}
+        <section id="move-left" className="section-container h-screen relative pointer-events-none" style={{ background: 'transparent' }}>
+          
+          {/* Subtle Grid Lining matching Screenshot 1 */}
+          <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', pointerEvents: 'none', zIndex: 1, opacity: 0.2 }}>
+            <div style={{ position: 'absolute', top: '50%', left: 0, width: '100%', height: '1px', background: 'rgba(255,255,255,0.07)' }} />
+            <div style={{ position: 'absolute', top: 0, left: '33.33%', width: '1px', height: '100%', background: 'rgba(255,255,255,0.07)' }} />
+            <div style={{ position: 'absolute', top: 0, left: '66.66%', width: '1px', height: '100%', background: 'rgba(255,255,255,0.07)' }} />
+          </div>
+
+          <div className="relative h-full flex items-center justify-start px-8 md:px-24" style={{ zIndex: 10 }}>
+            {/* Info panel on the Left side, ball will be on the Right side */}
+            <div style={{ maxWidth: '420px', color: '#fff', pointerEvents: 'auto' }}>
+              
+              {/* Orange Tag */}
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '16px' }}>
+                <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: accent }} />
+                <span style={{ fontSize: '9px', letterSpacing: '0.18em', color: accent, textTransform: 'uppercase', fontWeight: 800 }}>
+                  Performance Metrics
+                </span>
+              </div>
+
+              {/* Title */}
+              <h2 className="font-bebas" style={{
+                fontSize: 'clamp(3.5rem, 6vw, 5.5rem)',
+                lineHeight: 0.9,
+                letterSpacing: '0.02em',
+                marginBottom: '32px',
+                color: '#fff',
+                textTransform: 'uppercase',
+              }}>
+                Elite<br />Control
+              </h2>
+
+              {/* Metric 1 */}
+              <div style={{ borderTop: '1px solid rgba(255,255,255,0.08)', paddingTop: '20px', marginBottom: '24px' }}>
+                <div style={{ display: 'flex', alignItems: 'baseline', gap: '8px' }}>
+                  <span style={{ fontFamily: "'Bebas Neue',cursive", fontSize: '42px', lineHeight: 1, fontWeight: 900 }}>100%</span>
+                </div>
+                <div style={{ fontSize: '10px', letterSpacing: '0.12em', fontWeight: 800, textTransform: 'uppercase', margin: '4px 0 8px', color: '#fff' }}>
+                  Microfiber Composite
+                </div>
+                <div style={{ fontSize: '12px', color: 'rgba(255,255,255,0.45)', lineHeight: 1.5 }}>
+                  Exclusive coating material providing superior grip management in all weather conditions.
+                </div>
+              </div>
+
+              {/* Metric 2 */}
+              <div style={{ borderTop: '1px solid rgba(255,255,255,0.08)', paddingTop: '20px' }}>
+                <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px' }}>
+                  <span style={{ fontFamily: "'Bebas Neue',cursive", fontSize: '42px', lineHeight: 1, fontWeight: 900 }}>0.5</span>
+                  <span style={{ fontSize: '14px', fontWeight: 800 }}>mm</span>
+                </div>
+                <div style={{ fontSize: '10px', letterSpacing: '0.12em', fontWeight: 800, textTransform: 'uppercase', margin: '4px 0 8px', color: '#fff' }}>
+                  Pebble Depth
+                </div>
+                <div style={{ fontSize: '12px', color: 'rgba(255,255,255,0.45)', lineHeight: 1.5 }}>
+                  Optimized surface texture for precision handling and rotational feedback.
+                </div>
+              </div>
+
+            </div>
           </div>
         </section>
 
-        {/* ══════════════════════════ FAST BREAK ══════════════════════════════ */}
-        <section id="move-right" className="section-container h-[150vh] relative pointer-events-none">
-          <div className="sticky top-0 h-screen flex items-center px-8 md:px-24">
-            <h2 className="font-bebas w-full text-left" style={{
-              fontSize: 'clamp(4rem,10vw,10rem)',
-              transform: 'translateY(-2.5rem)',
-              color: 'transparent',
-              WebkitTextStroke: '2px rgba(255,255,255,0.85)',
-              textShadow: '0 0 40px rgba(255,255,255,0.15)',
-              letterSpacing: '0.05em', lineHeight: 1,
-            }}>FAST BREAK</h2>
+        {/* ══════════════════════════ FAST BREAK (PERFECT FLIGHT) ══════════════════════════════ */}
+        <section id="move-right" className="section-container h-screen relative pointer-events-none" style={{ background: 'transparent' }}>
+          
+          {/* Concentric curved grid centering around the left-aligned ball */}
+          <svg style={{ position: 'absolute', left: 0, top: 0, width: '100%', height: '100%', pointerEvents: 'none', zIndex: 1, opacity: 0.12 }}>
+            <circle cx={typeof window !== 'undefined' && window.innerWidth < 768 ? "18%" : "28%"} cy="50%" r="220" stroke="rgba(255,255,255,0.45)" strokeDasharray="3 5" fill="none" />
+            <circle cx={typeof window !== 'undefined' && window.innerWidth < 768 ? "18%" : "28%"} cy="50%" r="340" stroke="rgba(255,255,255,0.35)" strokeDasharray="3 5" fill="none" />
+            <circle cx={typeof window !== 'undefined' && window.innerWidth < 768 ? "18%" : "28%"} cy="50%" r="460" stroke="rgba(255,255,255,0.25)" strokeDasharray="3 5" fill="none" />
+            <circle cx={typeof window !== 'undefined' && window.innerWidth < 768 ? "18%" : "28%"} cy="50%" r="580" stroke="rgba(255,255,255,0.15)" strokeDasharray="3 5" fill="none" />
+            <circle cx={typeof window !== 'undefined' && window.innerWidth < 768 ? "18%" : "28%"} cy="50%" r="700" stroke="rgba(255,255,255,0.08)" strokeDasharray="3 5" fill="none" />
+          </svg>
+
+          <div className="relative h-full flex items-center justify-end px-8 md:px-24" style={{ zIndex: 10 }}>
+            {/* Info panel on the Right side, ball will be on the Left side */}
+            <div style={{ maxWidth: '440px', color: '#fff', textAlign: 'right', pointerEvents: 'auto', display: 'flex', flexDirection: 'column', alignItems: 'flex-end' }}>
+              
+              {/* Aerodynamics Pill Tag */}
+              <div style={{
+                border: '1px solid rgba(255,255,255,0.25)',
+                borderRadius: '9999px',
+                padding: '4px 14px',
+                marginBottom: '20px',
+                fontSize: '9px',
+                letterSpacing: '0.15em',
+                textTransform: 'uppercase',
+                fontWeight: 800,
+                color: 'rgba(255,255,255,0.85)',
+              }}>
+                Aerodynamics
+              </div>
+
+              {/* Title */}
+              <h2 className="font-bebas" style={{
+                fontSize: 'clamp(3.5rem, 6vw, 5.5rem)',
+                lineHeight: 0.9,
+                letterSpacing: '0.02em',
+                marginBottom: '32px',
+                color: '#fff',
+                textTransform: 'uppercase',
+              }}>
+                Perfect<br />Flight
+              </h2>
+
+              {/* Metric 1 */}
+              <div style={{ borderTop: '1px solid rgba(255,255,255,0.08)', paddingTop: '20px', marginBottom: '24px', width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'flex-end' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                  <span style={{ fontFamily: "'Bebas Neue',cursive", fontSize: '42px', lineHeight: 1, fontWeight: 900 }}>0.85</span>
+                  <span style={{ width: '18px', height: '18px', borderRadius: '50%', border: '1.5px solid rgba(255,255,255,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <span style={{ width: '4px', height: '4px', borderRadius: '50%', background: '#fff' }} />
+                  </span>
+                </div>
+                <div style={{ fontSize: '10px', letterSpacing: '0.12em', fontWeight: 800, textTransform: 'uppercase', margin: '4px 0 0', color: 'rgba(255,255,255,0.5)' }}>
+                  Drag Coefficient
+                </div>
+              </div>
+
+              {/* Metric 2 */}
+              <div style={{ borderTop: '1px solid rgba(255,255,255,0.08)', paddingTop: '20px', marginBottom: '32px', width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'flex-end' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                  <span style={{ fontFamily: "'Bebas Neue',cursive", fontSize: '42px', lineHeight: 1, fontWeight: 900 }}>28.5</span>
+                  <span style={{ width: '18px', height: '18px', borderRadius: '50%', border: '1.5px solid rgba(255,255,255,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <span style={{ width: '4px', height: '4px', borderRadius: '50%', background: '#fff' }} />
+                  </span>
+                </div>
+                <div style={{ fontSize: '10px', letterSpacing: '0.12em', fontWeight: 800, textTransform: 'uppercase', margin: '4px 0 0', color: 'rgba(255,255,255,0.5)' }}>
+                  Rotational Stability
+                </div>
+              </div>
+
+              {/* Description */}
+              <div style={{ fontSize: '13px', color: 'rgba(255,255,255,0.45)', lineHeight: 1.6, maxWidth: '380px' }}>
+                Symmetrically balanced weight distribution ensures true flight path and consistent rotation speed, critical for long-range precision.
+              </div>
+
+            </div>
           </div>
         </section>
 
-        {/* ══════════════════════════ THE ZONE ════════════════════════════════ */}
-        <section id="center-rings" className="section-container h-[200vh] relative pointer-events-none">
-          <div className="sticky top-0 h-screen flex flex-col items-center justify-center overflow-hidden">
+        <section id="center-rings" className="section-container h-screen relative pointer-events-none">
+          <div className="relative h-full flex flex-col items-center justify-center overflow-hidden">
 
             {/* ── Technical HUD overlay (reference image) ── */}
 
@@ -420,9 +534,8 @@ export default function App() {
         </section>
 
 
-        {/* ════════════════ THE CHAMPION / LEGACY ════════════════════════════ */}
-        <section id="finale" className="section-container h-[200vh] relative pointer-events-none">
-          <div className="sticky top-0 h-screen flex flex-col items-start justify-start pt-16 px-8 md:px-16 overflow-hidden">
+        <section id="finale" className="section-container h-screen relative pointer-events-none">
+          <div className="relative h-full flex flex-col items-start justify-start pt-16 px-8 md:px-16 overflow-hidden">
 
             {/* Top subtitle */}
             <div id="finale-subtitle" style={{ width: '100%', textAlign: 'center', marginBottom: '8px', opacity: 0, transform: 'translateY(20px)' }}>
