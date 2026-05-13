@@ -638,7 +638,7 @@ export default function ThreeScene({ config = DEFAULT_CONFIG }) {
       if (index === 0) {
         // State 1: HOOPS (Hero)
         gsap.to(ballContainer.position, { x: 0, y: 0, z: 0, duration, ease });
-        gsap.to(ballContainer.scale,    { x: 1.0, y: 1.0, z: 1.0, duration, ease });
+        gsap.to(ballContainer.scale,    { x: 0.82, y: 0.82, z: 0.82, duration, ease });
         gsap.to(podiumGroup.position,   { y: -12, duration, ease });
         gsap.to(ringsGroup.scale,       { x: 0, y: 0, z: 0, duration, ease });
         gsap.to(mainLight,              { intensity: 11.5, duration, ease });

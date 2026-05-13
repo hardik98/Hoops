@@ -174,11 +174,11 @@ export default function App() {
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
                 fontSize: 'clamp(5rem, 21vw, 24rem)',
                 lineHeight: 0.85,
-                letterSpacing: '0.12em',    // more space between letters as requested
+                letterSpacing: '0.02em',    // tighter letter spacing for a punchier feel
                 fontWeight: 900,            // extra bold look
                 color: 'rgba(255,255,255,0.22)',
                 userSelect: 'none',
-                gap: '0.14em',              // more gap for the ball slot
+                gap: '0.05em',              // tighter gap for the ball slot
               }}
             >
               <span>H</span>
@@ -186,7 +186,7 @@ export default function App() {
               {/* Ball replaces the second O — slightly smaller than before for a premium fit */}
               <div
                 id="ball-placeholder"
-                style={{ width: '0.8em', height: '0.8em', visibility: 'hidden', flexShrink: 0 }}
+                style={{ width: '0.65em', height: '0.65em', visibility: 'hidden', flexShrink: 0 }}
               />
               <span>P</span>
               <span>S</span>
