@@ -159,6 +159,14 @@ export default function ThreeScene({ config = DEFAULT_CONFIG }) {
     if (!isFirstRender.current && ballRefs.current?.triggerSpin) {
       ballRefs.current.triggerSpin();
     }
+    // Re-align the ball position to the newly moved placeholder (due to word change)
+    if (ballRefs.current?.matchBallToPlaceholder) {
+      setTimeout(() => {
+        if (ballRefs.current?.matchBallToPlaceholder) {
+          ballRefs.current.matchBallToPlaceholder();
+        }
+      }, 50); // Small buffer to ensure React DOM has completed layout of new word
+    }
     isFirstRender.current = false;
   }, [config]);
 
@@ -529,11 +537,12 @@ export default function ThreeScene({ config = DEFAULT_CONFIG }) {
       hemi, mainLight, rimLight, fillLight, fillLight2,
       triggerSpin,
       updateRingColors,
+      matchBallToPlaceholder,
     };
     applyConfigToRefs(ballRefs.current, config);
 
     // Ball → DOM placeholder
-    function matchBallToPlaceholder() {
+    function matchBallToPlaceholder(instant = false) {
       if (window.scrollY > 100) return;
       const ph = document.getElementById('ball-placeholder');
       if (!ph) return;
@@ -546,11 +555,20 @@ export default function ThreeScene({ config = DEFAULT_CONFIG }) {
       );
       vec.unproject(camera).sub(camera.position).normalize();
       pos.copy(camera.position).add(vec.multiplyScalar(-camera.position.z / vec.z));
-      ballContainer.position.copy(pos);
+      
       const vFov = (camera.fov * Math.PI) / 180;
       const vH = 2 * Math.tan(vFov / 2) * camera.position.z, vW = vH * camera.aspect;
       const sc = ((rect.width / window.innerWidth) * vW / 4) * 1.1;  // 1.1 = correct match to 0.85em placeholder
-      ballContainer.scale.set(sc, sc, sc);
+
+      if (instant || isFirstRender.current) {
+        ballContainer.position.copy(pos);
+        ballContainer.scale.set(sc, sc, sc);
+      } else {
+        gsap.killTweensOf(ballContainer.position);
+        gsap.killTweensOf(ballContainer.scale);
+        gsap.to(ballContainer.position, { x: pos.x, y: pos.y, z: pos.z, duration: 0.65, ease: 'power2.out' });
+        gsap.to(ballContainer.scale, { x: sc, y: sc, z: sc, duration: 0.65, ease: 'power2.out' });
+      }
     }
 
     function onWindowResize() {
@@ -559,7 +577,7 @@ export default function ThreeScene({ config = DEFAULT_CONFIG }) {
       renderer.setSize(window.innerWidth, window.innerHeight);
       cameraZ = window.innerWidth < 768 ? 22 : 15;
       camera.position.z = cameraZ;
-      matchBallToPlaceholder();
+      matchBallToPlaceholder(true);
       ScrollTrigger.refresh();
     }
     window.addEventListener('resize', onWindowResize);
