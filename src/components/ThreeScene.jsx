@@ -634,14 +634,14 @@ export default function ThreeScene({ config = DEFAULT_CONFIG }) {
     const mob = window.innerWidth < 768;
     const sidOff = mob ? 2.2 : 5.2; // Golden-ratio side offsets to keep center inside on all aspect ratios
     const zoomZ = mob ? 8 : 5;
-    const targetScale = mob ? 1.0 : 1.3; // Sized perfectly to fit cleanly beside technical text without overlapping or overwhelming
+    const targetScale = mob ? 1.1 : 1.45; // Sized perfectly to fit cleanly beside technical text without overlapping or overwhelming
 
     // ── STATE-DRIVEN SCROLL ENGINE (NO MORE CONTINOUS SCRUBBING / IN-BETWEEN resting states) ──
     let activeStateIndex = 0;
 
     function goToState(index) {
       activeStateIndex = index;
-      const duration = 0.85;
+      const duration = (index === 1 || index === 2) ? 1.25 : 0.85; // Slower elegant speed for left/right slides, snappy 0.85 for others
       const ease = 'power2.out';
 
       // Cleanly cancel all active animations on any shared Three.js objects to prevent overlap jitter
