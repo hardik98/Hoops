@@ -795,7 +795,7 @@ export default function ThreeScene({ config = DEFAULT_CONFIG }) {
       window.removeEventListener('scroll', onScroll);
       document.body.style.cursor = '';
       cancelAnimationFrame(raf);
-      intro?.kill(); tl.scrollTrigger?.kill(); tl.kill();
+      intro?.kill();
       ScrollTrigger.getAll().forEach(st => st.kill());
       ballRefs.current = null;
 
