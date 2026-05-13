@@ -7,16 +7,16 @@ export const DEFAULT_CONFIG = {
 };
 
 export const PRESETS = [
-  { name: 'Classic',   baseColor: '#c85a17', lineColor: '#1a0800', seamPattern: 'classic', lighting: 'studio' },
-  { name: 'Neon Pink', baseColor: '#db2777', lineColor: '#ffffff', seamPattern: 'street',  lighting: 'studio' },
-  { name: 'Baby Pink', baseColor: '#fbcfe8', lineColor: '#ffffff', seamPattern: 'classic', lighting: 'studio' },
-  { name: 'Midnight',  baseColor: '#0f1629', lineColor: '#00e5ff', seamPattern: 'tech',    lighting: 'studio' },
-  { name: 'Inferno',   baseColor: '#7f1d1d', lineColor: '#fbbf24', seamPattern: 'cross',   lighting: 'studio' },
-  { name: 'Forest',    baseColor: '#14532d', lineColor: '#86efac', seamPattern: 'street',  lighting: 'studio' },
-  { name: 'Ocean',     baseColor: '#1e3a8a', lineColor: '#7dd3fc', seamPattern: 'classic', lighting: 'studio' },
-  { name: 'Chrome',    baseColor: '#1f2937', lineColor: '#f59e0b', seamPattern: 'tech',    lighting: 'studio' },
-  { name: 'Royal',     baseColor: '#4c1d95', lineColor: '#f0abfc', seamPattern: 'cross',   lighting: 'studio' },
-  { name: 'Sunset',    baseColor: '#92400e', lineColor: '#fde68a', seamPattern: 'street',  lighting: 'studio' },
+  { name: 'Classic',   baseColor: '#c85a17', lineColor: '#1a0800', seamPattern: 'classic', lighting: 'studio', word: 'HOOPS',  ballIndex: 2 },
+  { name: 'Neon Pink', baseColor: '#db2777', lineColor: '#ffffff', seamPattern: 'street',  lighting: 'studio', word: 'GLOWS',  ballIndex: 2 },
+  { name: 'Baby Pink', baseColor: '#fbcfe8', lineColor: '#ffffff', seamPattern: 'classic', lighting: 'studio', word: 'BLOOM',  ballIndex: 2 },
+  { name: 'Midnight',  baseColor: '#0f1629', lineColor: '#00e5ff', seamPattern: 'tech',    lighting: 'studio', word: 'STORM',  ballIndex: 2 },
+  { name: 'Inferno',   baseColor: '#7f1d1d', lineColor: '#fbbf24', seamPattern: 'cross',   lighting: 'studio', word: 'SHOCK',  ballIndex: 2 },
+  { name: 'Forest',    baseColor: '#14532d', lineColor: '#86efac', seamPattern: 'street',  lighting: 'studio', word: 'GROVE',  ballIndex: 2 },
+  { name: 'Ocean',     baseColor: '#1e3a8a', lineColor: '#7dd3fc', seamPattern: 'classic', lighting: 'studio', word: 'OCEAN',  ballIndex: 0 },
+  { name: 'Chrome',    baseColor: '#1f2937', lineColor: '#f59e0b', seamPattern: 'tech',    lighting: 'studio', word: 'ALLOY',  ballIndex: 3 },
+  { name: 'Royal',     baseColor: '#4c1d95', lineColor: '#f0abfc', seamPattern: 'cross',   lighting: 'studio', word: 'CROWN',  ballIndex: 2 },
+  { name: 'Sunset',    baseColor: '#92400e', lineColor: '#fde68a', seamPattern: 'street',  lighting: 'studio', word: 'BOUNCE', ballIndex: 1 },
 ];
 
 // ─── Color palettes ──────────────────────────────────────────────────────────

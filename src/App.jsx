@@ -174,22 +174,39 @@ export default function App() {
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
                 fontSize: 'clamp(5rem, 21vw, 24rem)',
                 lineHeight: 0.85,
-                letterSpacing: '0.02em',    // tighter letter spacing for a punchier feel
+                letterSpacing: '0.12em',    // more space between letters as requested
                 fontWeight: 900,            // extra bold look
                 color: 'rgba(255,255,255,0.22)',
                 userSelect: 'none',
-                gap: '0.05em',              // tighter gap for the ball slot
+                gap: '0.14em',              // more gap for the ball slot
               }}
             >
-              <span>H</span>
-              <span>O</span>
-              {/* Ball replaces the second O — slightly smaller than before for a premium fit */}
-              <div
-                id="ball-placeholder"
-                style={{ width: '0.65em', height: '0.65em', visibility: 'hidden', flexShrink: 0 }}
-              />
-              <span>P</span>
-              <span>S</span>
+              <AnimatePresence mode="popLayout">
+                {(PRESETS[presetIdx]?.word || 'HOOPS').split('').map((char, charIdx) => {
+                  const ballIdx = PRESETS[presetIdx]?.ballIndex !== undefined ? PRESETS[presetIdx]?.ballIndex : 2;
+                  if (charIdx === ballIdx) {
+                    return (
+                      <div
+                        key="ball-placeholder"
+                        id="ball-placeholder"
+                        style={{ width: '0.8em', height: '0.8em', visibility: 'hidden', flexShrink: 0 }}
+                      />
+                    );
+                  }
+                  return (
+                    <motion.span
+                      key={`${presetIdx}-${charIdx}-${char}`}
+                      initial={{ opacity: 0, y: 20, rotateX: -30 }}
+                      animate={{ opacity: 1, y: 0, rotateX: 0 }}
+                      exit={{ opacity: 0, y: -20, rotateX: 30 }}
+                      transition={{ type: 'spring', stiffness: 350, damping: 22, delay: charIdx * 0.03 }}
+                      style={{ display: 'inline-block', transformOrigin: 'center bottom' }}
+                    >
+                      {char}
+                    </motion.span>
+                  );
+                })}
+              </AnimatePresence>
             </h1>
           </div>
 
